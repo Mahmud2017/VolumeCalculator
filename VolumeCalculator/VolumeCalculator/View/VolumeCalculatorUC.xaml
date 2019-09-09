@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="VolumeCalculator.View.VolumeCalculatorUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:convs="clr-namespace:VolumeCalculator.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+        <convs:GridStructureConverter x:Key="GridStructureConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <TextBlock IsEnabled="False" Margin="10" Text="{Binding ImportedData, Converter={StaticResource GridStructureConverter}}" ></TextBlock>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Margin="5 10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="importTextBox" Margin="5 0 0 0" Text="{Binding ImportText, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="1" Margin="5 1" Content="Import" Command="{Binding OpenDialogCmd}"/>
+            </Grid>
+            <GroupBox Name="unitsBox" IsEnabled="{Binding IsUnitsBoxEnabled}" Header="Units" Padding="5" Margin="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton HorizontalAlignment="Center" Content="Cubic Feet" IsChecked="{Binding IsCubicFeetSelected}"/>
+                    <RadioButton Grid.Column="1" HorizontalAlignment="Center" Content="Cubic Meter" IsChecked="{Binding IsCubicMeterSelected}"/>
+                    <RadioButton Grid.Column="2" HorizontalAlignment="Center" Content="Barrels" IsChecked="{Binding IsBarrelsSelected}"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Result" Padding="5" Margin="5">
+                <Label HorizontalAlignment="Center" Content="{Binding ResultText}" />
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

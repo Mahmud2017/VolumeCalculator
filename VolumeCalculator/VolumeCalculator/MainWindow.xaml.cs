@@ -16,7 +16,8 @@ using System.Windows.Shapes;
 namespace VolumeCalculator
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// This is the main window.
+    /// Contains the volume control user control.
     /// </summary>
     public partial class MainWindow : Window
     {
