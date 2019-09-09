@@ -179,17 +179,17 @@ namespace VolumeCalculator.ViewModel
 
         private void SetCubicFeetAsResult()
         {            
-            ResultText = m_VolumeCalculationHelper.GetCubicFeet().ToString();
+            ResultText = m_VolumeCalculationHelper.GetCubicFeet().ToString("0.00");
         }
 
         private void SetCubicMeterAsResult()
         {
-            ResultText = m_VolumeCalculationHelper.GetCubicMeter().ToString();
+            ResultText = m_VolumeCalculationHelper.GetCubicMeter().ToString("0.00");
         }
 
         private void SetBarrelsAsResult()
         {
-            ResultText = m_VolumeCalculationHelper.GetBarrels().ToString();
+            ResultText = m_VolumeCalculationHelper.GetBarrels().ToString("0.00");
         }
         #endregion
     }
