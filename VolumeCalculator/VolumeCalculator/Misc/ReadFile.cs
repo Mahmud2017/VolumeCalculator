@@ -32,7 +32,11 @@ namespace VolumeCalculator.Misc
             if (topHorizonList.Count / Globals.LATERAL_X != Globals.LATERAL_Y 
                 || topHorizonList.Count / Globals.LATERAL_Y != Globals.LATERAL_X)
             {
-                topHorizonList.Clear();
+                throw new InvalidDataException();                
+            }
+            else if (topHorizonList.Min() < 0)
+            {
+                throw new ArgumentOutOfRangeException();
             }
 
             return topHorizonList;
