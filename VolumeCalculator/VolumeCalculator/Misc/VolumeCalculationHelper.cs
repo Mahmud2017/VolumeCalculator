@@ -7,7 +7,7 @@ namespace VolumeCalculator.Misc
     /// Handles all the calculations for volume.
     /// Contains all the volume data.
     /// </summary>
-    class VolumeCalculationHelper : IVolumeCalculationHelper
+    public class VolumeCalculationHelper : IVolumeCalculationHelper
     {
         #region Private Constant Members        
         private const double METER_TO_FEET = 3.28084;

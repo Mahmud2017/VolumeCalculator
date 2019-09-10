@@ -114,6 +114,8 @@ namespace VolumeCalculator.ViewModel
                 RaisePropertyChanged("ImportedData");
             }
         }
+
+        public bool InTestMode { get; set; } = false;
         #endregion
 
         #region Constructor
@@ -179,31 +181,35 @@ namespace VolumeCalculator.ViewModel
                 IsUnitsBoxEnabled = true;
                 IsCubicFeetSelected = true;
             }
-            catch(InvalidDataException)
+            catch(InvalidDataException e)
             {
-                ShowErrorMessage("File does not contains the correct amount of data.");
+                ShowErrorMessage("File does not contains the correct amount of data.", e);
             }
-            catch (ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException e)
             {
-                ShowErrorMessage("File contains negative data.");
+                ShowErrorMessage("File contains negative data.", e);
             }
-            catch (FormatException)
+            catch (FormatException e)
             {
-                ShowErrorMessage("File contains corrupt data.");
+                ShowErrorMessage("File contains corrupt data.", e);
             }
-            catch (OverflowException)
+            catch (OverflowException e)
             {
-                ShowErrorMessage("File contains too large or, too small data.");
+                ShowErrorMessage("File contains too large or, too small data.", e);
             }
         }
 
         /// <summary>
         /// Show error message when there is any exception.
         /// </summary>
-        private void ShowErrorMessage(string errorMessage)
+        private void ShowErrorMessage(string errorMessage, Exception e)
         {
             ImportText = "";
-            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            if (!InTestMode)
+                MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            else
+                throw e;
         }
 
         /// <summary>
