@@ -4,3 +4,5 @@
 - The implementation is done according to the provided document.
 - Reads .csv/.txt file and shows it in the top and the volume calculation can be seen at the bottom. Which ever option is selected that result is shown on the result section.
 - The design is inspired from the structure of a calculator.
+- Contains test code for checking the invalid data while reading from file.
+- Test files are provided for the test cases.
