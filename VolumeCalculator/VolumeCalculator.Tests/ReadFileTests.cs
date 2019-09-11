@@ -1,29 +1,29 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VolumeCalculator.ViewModel;
+using System.IO;
 using VolumeCalculator.Interfaces;
 using VolumeCalculator.Misc;
-using VolumeCalculator.Model;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VolumeCalculator.Tests
 {
     /// <summary>
-    /// Test class to verify all the exceptions while reading data.
+    /// To test the file reading functionality.
     /// </summary>
     [TestClass]
-    public class VolumeCalculationTests
+    public class ReadFileTests
     {
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void ReadCSVFile_FormatException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err1.csv");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }        
 
         [TestMethod]
@@ -31,11 +31,11 @@ namespace VolumeCalculator.Tests
         public void ReadCSVFile_InvalidDataException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err2.csv");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
         [TestMethod]
@@ -43,11 +43,11 @@ namespace VolumeCalculator.Tests
         public void ReadCSVFile_ArgumentOutOfRangeException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err3.csv");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
         [TestMethod]
@@ -55,11 +55,40 @@ namespace VolumeCalculator.Tests
         public void ReadCSVFile_OverflowException()
         {
             //Arrange            
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err4.csv");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
+        }
+
+        [TestMethod]
+        public void ReadCSVFile_WithoutError()
+        {
+            //Arrange
+            IReadFile irf = new ReadFile();
+            string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues.csv");
+            List<int> expectedData = new List<int>();
+
+            using (var reader = new StreamReader(@"" + filePath))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var numbers = line.Split(' ');
+
+                    numbers.ToList().ForEach(n =>
+                    {
+                        expectedData.Add(Convert.ToInt32(n));
+                    });
+                }
+            }
+
+            //Act
+            List<int> actualData = irf.Read(filePath);
+
+            //Assert
+            CollectionAssert.AreEqual(expectedData, actualData);
         }
 
         [TestMethod]
@@ -67,11 +96,11 @@ namespace VolumeCalculator.Tests
         public void ReadTXTFile_FormatException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err1.txt");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
         [TestMethod]
@@ -79,11 +108,11 @@ namespace VolumeCalculator.Tests
         public void ReadTXTFile_InvalidDataException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err2.txt");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
         [TestMethod]
@@ -91,11 +120,11 @@ namespace VolumeCalculator.Tests
         public void ReadTXTFile_ArgumentOutOfRangeException()
         {
             //Arrange
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err3.txt");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
         [TestMethod]
@@ -103,25 +132,40 @@ namespace VolumeCalculator.Tests
         public void ReadTXTFile_OverflowException()
         {
             //Arrange            
-            VolumeCalculatorVM vm = InitializeTest();
+            IReadFile irf = new ReadFile();
             string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues_err4.txt");
 
             //Act
-            vm.ImportText = filePath;
+            irf.Read(filePath);
         }
 
-        /// <summary>
-        /// Initializes the view model for volume calculation test.
-        /// </summary>
-        /// <returns>Volume calculator view model object</returns>
-        private static VolumeCalculatorVM InitializeTest()
+        [TestMethod]
+        public void ReadTXTFile_WithoutError()
         {
+            //Arrange
             IReadFile irf = new ReadFile();
-            IVolumeCalculationHelper ivch = new VolumeCalculationHelper();
-            IVolumeCalculatorModel ivcm = new VolumeCalculatorModel();
-            VolumeCalculatorVM vm = new VolumeCalculatorVM(ivch, ivcm, irf);
-            vm.InTestMode = true;
-            return vm;
+            string filePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Test_Files", "depthvalues.txt");
+            List<int> expectedData = new List<int>();
+
+            using (var reader = new StreamReader(@"" + filePath))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var numbers = line.Split(' ');
+
+                    numbers.ToList().ForEach(n =>
+                    {
+                        expectedData.Add(Convert.ToInt32(n));
+                    });
+                }
+            }
+
+            //Act
+            List<int> actualData = irf.Read(filePath);
+
+            //Assert
+            CollectionAssert.AreEqual(expectedData, actualData);
         }
     }
 }

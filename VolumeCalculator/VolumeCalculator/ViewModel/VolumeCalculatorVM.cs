@@ -114,8 +114,6 @@ namespace VolumeCalculator.ViewModel
                 RaisePropertyChanged("ImportedData");
             }
         }
-
-        public bool InTestMode { get; set; } = false;
         #endregion
 
         #region Constructor
@@ -181,35 +179,31 @@ namespace VolumeCalculator.ViewModel
                 IsUnitsBoxEnabled = true;
                 IsCubicFeetSelected = true;
             }
-            catch(InvalidDataException e)
+            catch(InvalidDataException)
             {
-                ShowErrorMessage("File does not contains the correct amount of data.", e);
+                ShowErrorMessage("File does not contains the correct amount of data.");
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
-                ShowErrorMessage("File contains negative data.", e);
+                ShowErrorMessage("File contains negative data.");
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
-                ShowErrorMessage("File contains corrupt data.", e);
+                ShowErrorMessage("File contains corrupt data.");
             }
-            catch (OverflowException e)
+            catch (OverflowException)
             {
-                ShowErrorMessage("File contains too large or, too small data.", e);
+                ShowErrorMessage("File contains too large or, too small data.");
             }
         }
 
         /// <summary>
         /// Show error message when there is any exception.
         /// </summary>
-        private void ShowErrorMessage(string errorMessage, Exception e)
+        private void ShowErrorMessage(string errorMessage)
         {
             ImportText = "";
-
-            if (!InTestMode)
-                MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            else
-                throw e;
+            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         /// <summary>
